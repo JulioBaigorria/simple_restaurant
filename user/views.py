@@ -1,5 +1,6 @@
 from django.contrib.auth import logout
 from user.serializers import UserSerializer, AuthTokenSerializer
+from core.models import User
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -34,3 +35,8 @@ class Logout(generics.GenericAPIView):
         logout(request)
         return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
 
+class ListUsersView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated, permissions.IsAdminUser)
+    queryset = User.objects.all()

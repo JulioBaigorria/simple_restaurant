@@ -23,8 +23,7 @@ class BaseRecipeAttrViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixi
         if assigned_only:
             queryset = queryset.filter(recipe__isnull=False)
 
-        return queryset.filter(
-            user=self.request.user).order_by('id').distinct()
+        return queryset.all().order_by('id')
 
     def perform_create(self, serializer):
         """ Create nuevo ingrediente o tag """
@@ -41,10 +40,6 @@ class IngredientViewset(BaseRecipeAttrViewSet):
     """Manejar ingredientes en base de datos"""
     queryset = models.Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
-
-    def get_queryset(self):
-        """Retornar objetos para el usuario autenticado"""
-        return self.queryset.filter(user=self.request.user).order_by('id')
 
 
 class RecipeViewset(viewsets.ModelViewSet):
