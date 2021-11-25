@@ -58,7 +58,7 @@ class PublicRecipeApiTests(TestCase):
     def test_retrieve_recipes(self):
         """Probar obtener lista de recetas"""
         sample_recipe(user=self.user)
-        sample_recipe(user=self.user)
+        sample_recipe(user=self.user, title="Tortilla")
 
         res = self.client.get(RECIPES_URL)
 
@@ -74,7 +74,7 @@ class PublicRecipeApiTests(TestCase):
             'passwordd'
         )
         sample_recipe(user=user2)
-        sample_recipe(user=self.user)
+        sample_recipe(user=self.user, title="ravioles con crema")
 
         res = self.client.get(RECIPES_URL)
 

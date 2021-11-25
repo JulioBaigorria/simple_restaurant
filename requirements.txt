@@ -7,3 +7,6 @@ pycodestyle==2.8.0
 pytz==2021.1
 sqlparse==0.4.2
 toml==0.10.2
+
+psycopg2-binary
+gunicorn==20.1.0

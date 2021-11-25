@@ -45,22 +45,22 @@ class PrivateIngredientApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-    def test_ingredient_limited_to_user(self):
-        """Probar que los tags retornados sean del usuario"""
-        user2 = get_user_model().objects.create_user(
-            'local@localhost.com',
-            'localpass'
-        )
-
-        Ingredient.objects.create(user=user2, name='salt')
-        ingredient = Ingredient.objects.create(
-            user=self.user, name='Comfort Food')
-
-        res = self.client.get(INGREDIENTS_URL)
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]['name'], ingredient.name)
+    # def test_ingredient_limited_to_user(self):
+    #     """Probar que los tags retornados sean del usuario"""
+    #     user2 = get_user_model().objects.create_user(
+    #         'local@localhost.com',
+    #         'localpass'
+    #     )
+    #
+    #     Ingredient.objects.create(user=user2, name='salt')
+    #     ingredient = Ingredient.objects.create(
+    #         user=self.user, name='Comfort Food')
+    #
+    #     res = self.client.get(INGREDIENTS_URL)
+    #
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(len(res.data), 1)
+    #     self.assertEqual(res.data[0]['name'], ingredient.name)
 
     def test_create_ingredient_successful(self):
         """Prueba creando nuevo ingrediente si no esta duplicado"""
