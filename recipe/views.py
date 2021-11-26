@@ -9,7 +9,8 @@ from core import models
 from recipe import serializers
 
 
-class BaseRecipeAttrViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin):
+class BaseRecipeAttrViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin,
+                            mixins.UpdateModelMixin):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -30,19 +31,25 @@ class BaseRecipeAttrViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixi
         serializer.save(user=self.request.user)
 
 
-class TagViewset(BaseRecipeAttrViewSet):
+class TagListViewSet(viewsets.ModelViewSet):
     """Manejar tags en base de datos"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     queryset = models.Tag.objects.all()
     serializer_class = serializers.TagSerializer
 
 
-class IngredientViewset(BaseRecipeAttrViewSet):
+class IngredientViewSet(BaseRecipeAttrViewSet):
     """Manejar ingredientes en base de datos"""
     queryset = models.Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
 
+    def get_queryset(self):
+        """Retornar objetos para el usuario autenticado"""
+        return self.queryset.filter(user=self.request.user)
 
-class RecipeViewset(viewsets.ModelViewSet):
+
+class RecipeViewSet(viewsets.ModelViewSet):
     """Manejar recipes en base de datos"""
     queryset = models.Recipe.objects.all()
     serializer_class = serializers.RecipeSerializer
@@ -86,7 +93,7 @@ class RecipeViewset(viewsets.ModelViewSet):
         )
 
     def _params_to_ints(self, qs):
-        return[int(str_id) for str_id in qs.split(',')]
+        return [int(str_id) for str_id in qs.split(',')]
 
     def get_queryset(self):
         tags = self.request.query_params.get('tags')

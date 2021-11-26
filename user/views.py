@@ -1,12 +1,12 @@
 from django.contrib.auth import logout
-from user.serializers import UserSerializer, AuthTokenSerializer
-from core.models import User
+from rest_framework.settings import api_settings
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import generics, authentication, permissions
-
-from rest_framework.settings import api_settings
+from user.serializers import UserSerializer, AuthTokenSerializer
+from core.models import User
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -30,10 +30,12 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
-class Logout(generics.GenericAPIView):
-    def post(self, request, *args, **kwargs):
+class Logout(APIView):
+    def get(self, request, format=None):
+        request.user.auth_token.delete()
         logout(request)
-        return Response({'message': 'Sesión cerrada correctamente.'}, status=status.HTTP_200_OK)
+        return Response({'response': 'logged out succefully'}, status=status.HTTP_200_OK)
+
 
 class ListUsersView(generics.ListAPIView):
     serializer_class = UserSerializer
